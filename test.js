@@ -1,5 +1,3 @@
-/* -*- Mode: js; tab-width: 2; indent-tabs-mode: nil; js-indent-level: 2; fill-column: 80 -*- */
-
 "use strict";
 
 /*
@@ -7,8 +5,16 @@
  * Licensed under the New BSD license. See LICENSE.md or:
  * http://opensource.org/licenses/BSD-2-Clause
  */
+/**
+ * @fileOverview Provides {@link global} test definitions and test runner.
+ */
 var prettyFast = this.prettyFast || require("./pretty-fast");
 
+/**
+ * prettyFast test cases definition
+ * @global
+ * @type Array
+ */
 var testCases = [
 
   {
@@ -527,6 +533,10 @@ var testCases = [
 
 var sourceMap = this.sourceMap || require("source-map");
 
+/**
+ * Runs prettyFast test cases.
+ * @function
+ */
 function run_test() {
   testCases.forEach(function (test) {
     console.log(test.name);
@@ -564,3 +574,11 @@ if (typeof require == "function" && typeof module == "object"
     && require.main === module) {
   run_test();
 }
+
+/* Local Variables: */
+/* mode: js */
+/* tab-width: 2 */
+/* indent-tabs-mode: nil */
+/* js-indent-level: 2 */
+/* fill-column: 80 */
+/* End: */

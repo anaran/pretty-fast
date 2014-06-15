@@ -1,8 +1,11 @@
-/* -*- Mode: js; tab-width: 2; indent-tabs-mode: nil; js-indent-level: 2; fill-column: 80 -*- */
 /*
  * Copyright 2013 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.md or:
  * http://opensource.org/licenses/BSD-2-Clause
+ */
+/**
+ * @fileOverview Pretty Fast is a source-map-generating JavaScript pretty
+ * printer, that is pretty fast.
  */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -12,7 +15,8 @@
   } else {
     root.prettyFast = factory();
   }
-}(this, function () {
+}(this, 
+  function () {
   "use strict";
 
   var acorn = this.acorn || require("acorn/acorn");
@@ -71,12 +75,14 @@
     "}": true
   };
 
-  /**
+  /**#@+
    * Determines if we think that the given token starts an array literal.
    *
-   * @param Object token
+   * @memberOf Foo
+   *
+   * @param {Object} token
    *        The token we want to determine if it is an array literal.
-   * @param Object lastToken
+   * @param {Object} lastToken
    *        The last token we added to the pretty printed results.
    *
    * @returns Boolean
@@ -92,7 +98,8 @@
     if (lastToken.type.isAssign) {
       return true;
     }
-    return !!PRE_ARRAY_LITERAL_TOKENS[lastToken.type.keyword || lastToken.type.type];
+    return !!PRE_ARRAY_LITERAL_TOKENS[lastToken.type.keyword
+                                      || lastToken.type.type];
   }
 
   // If any of these tokens are followed by a token on a new line, we know that
@@ -194,9 +201,9 @@
    * Determines if Automatic Semicolon Insertion (ASI) occurs between these
    * tokens.
    *
-   * @param Object token
+   * @param {Object} token
    *        The current token.
-   * @param Object lastToken
+   * @param {Object} lastToken
    *        The last token we added to the pretty printed results.
    *
    * @returns Boolean
@@ -209,7 +216,8 @@
     if (token.startLoc.line === lastToken.startLoc.line) {
       return false;
     }
-    if (PREVENT_ASI_AFTER_TOKENS[lastToken.type.type || lastToken.type.keyword]) {
+    if (PREVENT_ASI_AFTER_TOKENS[lastToken.type.type
+                                 || lastToken.type.keyword]) {
       return false;
     }
     if (PREVENT_ASI_BEFORE_TOKENS[token.type.type || token.type.keyword]) {
@@ -221,14 +229,14 @@
   /**
    * Determine if we have encountered a getter or setter.
    *
-   * @param Object token
+   * @param {Object} token
    *        The current token. If this is a getter or setter, it would be the
    *        property name.
-   * @param Object lastToken
+   * @param {Object} lastToken
    *        The last token we added to the pretty printed results. If this is a
    *        getter or setter, it would be the `get` or `set` keyword
    *        respectively.
-   * @param Array stack
+   * @param {Array} stack
    *        The stack of open parens/curlies/brackets/etc.
    *
    * @returns Boolean
@@ -245,9 +253,9 @@
   /**
    * Determine if we should add a newline after the given token.
    *
-   * @param Object token
+   * @param {Object} token
    *        The token we are looking at.
-   * @param Array stack
+   * @param {Array} stack
    *        The stack of open parens/curlies/brackets/etc.
    *
    * @returns Boolean
@@ -269,11 +277,11 @@
    * Append the necessary whitespace to the result after we have added the given
    * token.
    *
-   * @param Object token
+   * @param {Object} token
    *        The token that was just added to the result.
-   * @param Function write
+   * @param {Function} write
    *        The function to write to the pretty printed results.
-   * @param Array stack
+   * @param {Array} stack
    *        The stack of open parens/curlies/brackets/etc.
    *
    * @returns Boolean
@@ -292,9 +300,9 @@
    * Determines if we need to add a space between the last token we added and
    * the token we are about to add.
    *
-   * @param Object token
+   * @param {Object} token
    *        The token we are about to add to the pretty printed code.
-   * @param Object lastToken
+   * @param {Object} lastToken
    *        The last token added to the pretty printed code.
    */
   function needsSpaceAfter(token, lastToken) {
@@ -364,20 +372,20 @@
    * Add the required whitespace before this token, whether that is a single
    * space, newline, and/or the indent on fresh lines.
    *
-   * @param Object token
+   * @param {Object} token
    *        The token we are about to add to the pretty printed code.
-   * @param Object lastToken
+   * @param {Object} lastToken
    *        The last token we added to the pretty printed code.
-   * @param Boolean addedNewline
+   * @param {Boolean} addedNewline
    *        Whether we added a newline after adding the last token to the pretty
    *        printed code.
-   * @param Function write
+   * @param {Function} write
    *        The function to write pretty printed code to the result SourceNode.
-   * @param Object options
+   * @param {Object} options
    *        The options object.
-   * @param Number indentLevel
+   * @param {Number} indentLevel
    *        The number of indents deep we are.
-   * @param Array stack
+   * @param {Array} stack
    *        The stack of open curlies, brackets, etc.
    */
   function prependWhiteSpace(token, lastToken, addedNewline, write, options,
@@ -469,9 +477,9 @@
   /**
    * Repeat the `str` string `n` times.
    *
-   * @param String str
+   * @param {String} str
    *        The string to be repeated.
-   * @param Number n
+   * @param {Number} n
    *        The number of times to repeat the string.
    *
    * @returns String
@@ -490,8 +498,8 @@
   }
 
   /**
-   * Make sure that we output the escaped character combination inside string literals
-   * instead of various problematic characters.
+   * Make sure that we output the escaped character combination inside string
+   * literals instead of various problematic characters.
    */
   var sanitize = (function () {
     var escapeCharacters = {
@@ -520,7 +528,7 @@
       + ")";
     var escapeCharactersRegExp = new RegExp(regExpString, "g");
 
-    return function(str) {
+    return function (str) {
       return str.replace(escapeCharactersRegExp, function (_, c) {
         return escapeCharacters[c];
       });
@@ -529,11 +537,11 @@
   /**
    * Add the given token to the pretty printed results.
    *
-   * @param Object token
+   * @param {Object} token
    *        The token to add.
-   * @param Function write
+   * @param {Function} write
    *        The function to write pretty printed code to the result SourceNode.
-   * @param Object options
+   * @param {Object} options
    *        The options object.
    */
   function addToken(token, write, options) {
@@ -600,19 +608,19 @@
   /**
    * Add a comment to the pretty printed code.
    *
-   * @param Function write
+   * @param {Function} write
    *        The function to write pretty printed code to the result SourceNode.
-   * @param Number indentLevel
+   * @param {Number} indentLevel
    *        The number of indents deep we are.
-   * @param Object options
+   * @param {Object} options
    *        The options object.
-   * @param Boolean block
+   * @param {Boolean} block
    *        True if the comment is a multiline block style comment.
-   * @param String text
+   * @param {String} text
    *        The text of the comment.
-   * @param Number line
+   * @param {Number} line
    *        The line number to comment appeared on.
-   * @param Number column
+   * @param {Number} column
    *        The column number the comment appeared on.
    */
   function addComment(write, indentLevel, options, block, text, line, column) {
@@ -635,9 +643,11 @@
   /**
    * The main function.
    *
-   * @param String input
+   * @constructor
+   * @name prettyFast
+   * @param {String} input
    *        The ugly JS code we want to pretty print.
-   * @param Object options
+   * @param {Object} options
    *        The options object. Provides configurability of the pretty
    *        printing. Properties:
    *          - url: The URL string of the ugly JS code.
@@ -655,28 +665,30 @@
     // We will accumulate the pretty printed code in this SourceNode.
     var result = new SourceNode();
 
-    /**
-     * Write a pretty printed string to the result SourceNode.
-     *
-     * We buffer our writes so that we only create one mapping for each line in
-     * the source map. This enhances performance by avoiding extraneous mapping
-     * serialization, and flattening the tree that
-     * `SourceNode#toStringWithSourceMap` will have to recursively walk. When
-     * timing how long it takes to pretty print jQuery, this optimization
-     * brought the time down from ~390 ms to ~190ms!
-     *
-     * @param String str
-     *        The string to be added to the result.
-     * @param Number line
-     *        The line number the string came from in the ugly source.
-     * @param Number column
-     *        The column number the string came from in the ugly source.
-     */
     var write = (function () {
       var buffer = [];
       var bufferLine = -1;
       var bufferColumn = -1;
-      return function write(str, line, column) {
+      return
+      /**
+       * Write a pretty printed string to the result SourceNode.
+       *
+       * We buffer our writes so that we only create one mapping for each line in
+       * the source map. This enhances performance by avoiding extraneous mapping
+       * serialization, and flattening the tree that
+       * `SourceNode#toStringWithSourceMap` will have to recursively walk. When
+       * timing how long it takes to pretty print jQuery, this optimization
+       * brought the time down from ~390 ms to ~190ms!
+       *
+       * @memberOf prettyFast
+       * @param {String} str
+       *        The string to be added to the result.
+       * @param {Number} line
+       *        The line number the string came from in the ugly source.
+       * @param {Number} column
+       *        The column number the string came from in the ugly source.
+       */
+      function write(str, line, column) {
         if (line != null && bufferLine === -1) {
           bufferLine = line;
         }
@@ -690,7 +702,8 @@
           for (var i = 0, len = buffer.length; i < len; i++) {
             lineStr += buffer[i];
           }
-          result.add(new SourceNode(bufferLine, bufferColumn, options.url, lineStr));
+          result.add(new SourceNode(bufferLine, bufferColumn, options.url,
+                                    lineStr));
           buffer.splice(0, buffer.length);
           bufferLine = -1;
           bufferColumn = -1;
@@ -864,3 +877,11 @@
   };
 
 }.bind(this)));
+
+/* Local Variables: */
+/* mode: js */
+/* tab-width: 2 */
+/* indent-tabs-mode: nil */
+/* js-indent-level: 2 */
+/* fill-column: 80 */
+/* End: */
